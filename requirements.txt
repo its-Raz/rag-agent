@@ -1,0 +1,5 @@
+fastapi
+uvicorn
+pydantic
+pinecone>=3.0.0
+langchain-openai
