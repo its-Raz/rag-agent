@@ -10,7 +10,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # Configuration
 API_URL = "https://ted-talk-rag-eight.vercel.app/api/prompt"
-LLMSTUDIO_API_KEY = "sk-wTBXiguVpJZFjvcvs3OWoA"
+LLMSTUDIO_API_KEY = ""
 LLM_MODEL = "RPRTHPB-gpt-5-mini"
 
 # Test questions for each task type
@@ -339,4 +339,5 @@ def main():
 
 
 if __name__ == "__main__":
+
     main()
