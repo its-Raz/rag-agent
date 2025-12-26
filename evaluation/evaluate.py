@@ -322,7 +322,7 @@ def main():
         }
 
     # Save combined results
-    save_results(all_results)
+    # save_results(all_results)
 
     # Print summary
     print_summary(all_results)

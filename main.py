@@ -185,7 +185,7 @@ def answer_question(question, top_k=TOP_K):
         context.append({
             "talk_id": match['metadata'].get('talk_id', ''),
             "title": match['metadata'].get('title', ''),
-            "chunk": match['metadata'].get('text', '')[:500] + '...',
+            "chunk": match['metadata'].get('text', ''),
             "score": match['score']
         })
 
