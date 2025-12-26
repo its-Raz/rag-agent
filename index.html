@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TED Talk RAG Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #EB0028;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3.5em;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            margin-bottom: 20px;
+        }
+
+        .description {
+            background-color: white;
+            color: #333;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            font-size: 1.1em;
+        }
+
+        .query-box {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .query-box h2 {
+            color: #EB0028;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .examples {
+            margin-bottom: 20px;
+        }
+
+        .example-btn {
+            background-color: #f5f5f5;
+            border: 2px solid #ddd;
+            padding: 12px 15px;
+            margin: 5px 5px 5px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            display: inline-block;
+            font-size: 0.9em;
+            color: #333;
+            transition: all 0.2s;
+        }
+
+        .example-btn:hover {
+            background-color: #EB0028;
+            color: white;
+            border-color: #EB0028;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 120px;
+            color: #333;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #EB0028;
+        }
+
+        button {
+            background-color: #EB0028;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background-color 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        button:hover {
+            background-color: #c7001f;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .response-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .response-container h3 {
+            color: #EB0028;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .response-text {
+            color: #333;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            margin-bottom: 30px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-weight: 700;
+            font-size: 1.2em;
+        }
+
+        .error {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+
+        .context-section, .prompt-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .section-header h4 {
+            color: #EB0028;
+            font-size: 1.3em;
+        }
+
+        .toggle-btn {
+            background-color: #f5f5f5;
+            color: #333;
+            padding: 8px 16px;
+            font-size: 0.9em;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .toggle-btn:hover {
+            background-color: #e0e0e0;
+        }
+
+        .collapsible-content {
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .collapsed {
+            max-height: 0;
+        }
+
+        .expanded {
+            max-height: 5000px;
+        }
+
+        .context-item {
+            background-color: #f9f9f9;
+            border-left: 4px solid #EB0028;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+
+        .context-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .context-title {
+            font-weight: 700;
+            color: #EB0028;
+            font-size: 1.05em;
+        }
+
+        .context-score {
+            background-color: #EB0028;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 700;
+        }
+
+        .context-talk-id {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+
+        .context-chunk {
+            color: #333;
+            line-height: 1.6;
+            font-size: 0.95em;
+            background-color: white;
+            padding: 12px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+
+        .prompt-box {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .prompt-label {
+            font-weight: 700;
+            color: #EB0028;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .prompt-content {
+            background-color: white;
+            color: #333;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+        }
+
+        .context-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+            font-size: 0.9em;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>TED Talks RAG Agent</h1>
+            <h5>Created By Raz Biton</h5>
+        </div>
+
+        <div class="description">
+            <ul>
+                <li><strong>After asking a question, wait few second for a response.</strong></li>
+                <li>RAG agent that answers questions over <strong>TED Talk transcripts</strong> using retrieval-augmented generation.</li>
+                <li>Performed <strong>text chunking with LangChain</strong> and generated embeddings using <strong>RPRTHPB-text-embedding-3-small</strong>.</li>
+                <li>Used <strong>RPRTHPB-gpt-5-mini</strong> as the LLM for response generation.</li>
+                <li>Stored embedded data in a <strong>Pinecone vector database</strong> and deployed the API to <strong>Vercel</strong>.</li>
+                <li>Retrieved relevant content via <strong>vector similarity search</strong> and generated answers strictly grounded in retrieved data.</li>
+                <li>Supported multiple task types: <strong>specific talk retrieval</strong>, <strong>topic-based listing</strong>, <strong>key idea summarization</strong>, and <strong>evidence-based recommendations</strong>.</li>
+            </ul>
+        </div>
+
+        <div class="query-box">
+            <h2>Ask About TED Talks</h2>
+
+            <div class="examples">
+                <button class="example-btn" onclick="setQuestion('Find a TED talk that discusses overcoming fear or anxiety. Provide the title and speaker.')">Precise Fact Retrieval</button>
+                <button class="example-btn" onclick="setQuestion('Which TED talks focus on education or learning? Return a list of exactly 3 talk titles.')">Topic Listing (3 talks)</button>
+                <button class="example-btn" onclick="setQuestion('Find a TED talk where the speaker talks about technology improving people\'s lives. Provide the title and a short summary of the key idea.')">Key Idea Summary</button>
+                <button class="example-btn" onclick="setQuestion('I\'m looking for a TED talk about climate change and what individuals can do in their daily lives. Which talk would you recommend?')">Recommendation</button>
+            </div>
+
+            <textarea id="questionInput" placeholder="Type your question here...">Find a TED talk that discusses overcoming fear or anxiety. Provide the title and speaker.</textarea>
+            <button onclick="askQuestion()" id="askButton">Ask Question</button>
+
+            <div id="loadingIndicator" class="loading" style="display: none;">
+                Processing your question...
+            </div>
+        </div>
+
+        <div id="responseContainer" class="response-container">
+            <h3>Response</h3>
+            <div id="responseText" class="response-text"></div>
+
+            <!-- Context Section -->
+            <div class="context-section">
+                <div class="section-header" onclick="toggleSection('contextContent')">
+                    <h4>Retrieved Context</h4>
+                    <button class="toggle-btn" id="contextToggle">Show</button>
+                </div>
+                <div id="contextContent" class="collapsible-content collapsed">
+                    <div class="context-info" id="contextInfo"></div>
+                    <div id="contextItems"></div>
+                </div>
+            </div>
+
+            <!-- Augmented Prompt Section -->
+            <div class="prompt-section">
+                <div class="section-header" onclick="toggleSection('promptContent')">
+                    <h4>Augmented Prompt</h4>
+                    <button class="toggle-btn" id="promptToggle">Show</button>
+                </div>
+                <div id="promptContent" class="collapsible-content collapsed">
+                    <div class="prompt-box">
+                        <div class="prompt-label">System Prompt</div>
+                        <div class="prompt-content" id="systemPrompt"></div>
+                    </div>
+                    <div class="prompt-box">
+                        <div class="prompt-label">User Prompt</div>
+                        <div class="prompt-content" id="userPrompt"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function setQuestion(text) {
+            document.getElementById('questionInput').value = text;
+        }
+
+        function toggleSection(contentId) {
+            const content = document.getElementById(contentId);
+            const toggleBtn = contentId === 'contextContent' ?
+                document.getElementById('contextToggle') :
+                document.getElementById('promptToggle');
+
+            if (content.classList.contains('collapsed')) {
+                content.classList.remove('collapsed');
+                content.classList.add('expanded');
+                toggleBtn.textContent = 'Hide';
+            } else {
+                content.classList.remove('expanded');
+                content.classList.add('collapsed');
+                toggleBtn.textContent = 'Show';
+            }
+        }
+
+        function formatChunk(chunk) {
+            // Truncate if too long and add ellipsis
+            if (chunk.length > 500) {
+                return chunk.substring(0, 500) + '...';
+            }
+            return chunk;
+        }
+
+        async function askQuestion() {
+            const question = document.getElementById('questionInput').value.trim();
+
+            if (!question) {
+                alert('Please enter a question');
+                return;
+            }
+
+            const askButton = document.getElementById('askButton');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const responseContainer = document.getElementById('responseContainer');
+            const responseText = document.getElementById('responseText');
+            const contextInfo = document.getElementById('contextInfo');
+            const contextItems = document.getElementById('contextItems');
+            const systemPrompt = document.getElementById('systemPrompt');
+            const userPrompt = document.getElementById('userPrompt');
+
+            // Reset collapsed state
+            document.getElementById('contextContent').classList.add('collapsed');
+            document.getElementById('contextContent').classList.remove('expanded');
+            document.getElementById('promptContent').classList.add('collapsed');
+            document.getElementById('promptContent').classList.remove('expanded');
+            document.getElementById('contextToggle').textContent = 'Show';
+            document.getElementById('promptToggle').textContent = 'Show';
+
+            // Show loading state
+            askButton.disabled = true;
+            loadingIndicator.style.display = 'block';
+            responseContainer.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/prompt', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ question: question })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to get response');
+                }
+
+                const data = await response.json();
+
+                // Display main response
+                responseText.textContent = data.response;
+
+                // Display context info
+                contextInfo.textContent = `Retrieved ${data.context.length} relevant chunks from TED talks`;
+
+                // Display context items
+                contextItems.innerHTML = '';
+                data.context.forEach((item, index) => {
+                    const contextDiv = document.createElement('div');
+                    contextDiv.className = 'context-item';
+                    contextDiv.innerHTML = `
+                        <div class="context-item-header">
+                            <span class="context-title">${item.title || 'Unknown Title'}</span>
+                            <span class="context-score">Score: ${item.score.toFixed(4)}</span>
+                        </div>
+                        <div class="context-talk-id">Talk ID: ${item.talk_id || 'N/A'}</div>
+                        <div class="context-chunk">${formatChunk(item.chunk)}</div>
+                    `;
+                    contextItems.appendChild(contextDiv);
+                });
+
+                // Display augmented prompts
+                systemPrompt.textContent = data.Augmented_prompt.System;
+                userPrompt.textContent = data.Augmented_prompt.User;
+
+                responseContainer.style.display = 'block';
+                
+            } catch (error) {
+                responseText.innerHTML = '<div class="error">Error: ' + error.message + '</div>';
+                responseContainer.style.display = 'block';
+            } finally {
+                askButton.disabled = false;
+                loadingIndicator.style.display = 'none';
+            }
+        }
+        
+        // Allow Enter key to submit (with Shift+Enter for new lines)
+        document.getElementById('questionInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                askQuestion();
+            }
+        });
+    </script>
+</body>
+</html>

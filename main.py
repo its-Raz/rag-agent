@@ -158,7 +158,7 @@ def answer_question(question, top_k=TOP_K):
     index = get_pinecone_index()
 
     # 1. Embed query
-    query_embedding = embed_client.embed_documents([question])[0]
+    query_embedding = embed_client.embed_query(question)
 
     # 2. Retrieve similar chunks
     results = index.query(
@@ -234,10 +234,11 @@ async def stats_endpoint():
     )
 
 
+# Remove or modify the root endpoint
 @app.get("/")
 async def root():
-    """Serve the UI page"""
-    return FileResponse('index.html')
+    """API root - redirect to docs or return simple message"""
+    return {"message": "TED Talk RAG API", "docs": "/docs"}
 
 
 if __name__ == "__main__":
