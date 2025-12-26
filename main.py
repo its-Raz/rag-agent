@@ -46,6 +46,13 @@ Expected Behavior:
 - Do NOT return multiple chunks from the same talk.
 - Do NOT return more or fewer than 3 results.
 
+Example behavior:
+Question: "Which TED talks focus on education? Return exactly 3 talk titles."
+Correct response format:
+- <Title 1>
+- <Title 2>
+- <Title 3>
+
 3. Key Idea Summary Extraction
 Goal: Identify a relevant talk and generate a concise summary of its main idea.
 Expected Behavior:
