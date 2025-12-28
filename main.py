@@ -37,6 +37,7 @@ Expected Behavior:
 - Return the title and speaker(s) only.
 - Do NOT include multiple talks.
 - Base the answer strictly on retrieved transcript evidence.
+- Always explain your answer using the given context, quoting or paraphrasing the relevant transcript or metadata when helpful.
 
 2. Multi-Result Topic Listing (Up to 3 Results)
 Goal: Return multiple TED talk titles that match a given theme or topic.
