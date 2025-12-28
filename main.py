@@ -41,17 +41,11 @@ Expected Behavior:
 2. Multi-Result Topic Listing (Up to 3 Results)
 Goal: Return multiple TED talk titles that match a given theme or topic.
 Expected Behavior:
-- Return EXACTLY 3 DISTINCT talk titles.
+- Return EXACTLY 3 DISTINCT talk titles and their speakers in a list form.
 - Each title must refer to a different talk.
 - Do NOT return multiple chunks from the same talk.
 - Do NOT return more or fewer than 3 results.
-
-Example behavior:
-Question: "Which TED talks focus on education? Return exactly 3 talk titles."
-Correct response format:
-- <Title 1>
-- <Title 2>
-- <Title 3>
+- Always explain your answer using the given context, quoting or paraphrasing the relevant transcript or metadata when helpful.
 
 3. Key Idea Summary Extraction
 Goal: Identify a relevant talk and generate a concise summary of its main idea.
