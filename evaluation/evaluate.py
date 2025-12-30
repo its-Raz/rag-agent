@@ -83,13 +83,13 @@ for item in test_dataset:
 
 
         if not retrieved_texts or all(not text.strip() for text in retrieved_texts):
-            print(f"⚠️  Warning: No valid contexts found for question. Skipping.")
+            print(f"️  Warning: No valid contexts found for question. Skipping.")
             continue
 
 
         answer = result['response'].strip()
         if not answer:
-            print(f"⚠️  Warning: Empty answer received. Skipping.")
+            print(f"️  Warning: Empty answer received. Skipping.")
             continue
 
 
@@ -183,9 +183,9 @@ print("\n Checking for NaN values:")
 for col in output_df.columns:
     nan_count = output_df[col].isna().sum()
     if nan_count > 0:
-        print(f"  ⚠️  {col}: {nan_count} NaN values")
+        print(f"  ️  {col}: {nan_count} NaN values")
     else:
-        print(f"  ✓ {col}: No NaN values")
+        print(f"   {col}: No NaN values")
 
 
 output_df.to_csv("rag_evaluation_results.csv", index=False)
