@@ -102,16 +102,16 @@ for item in test_dataset:
         data_samples["ground_truth"].append(item['ground_truth'])
         data_samples["contexts"].append(retrieved_texts)
     else:
-        print("❌ Skipped question due to API error.")
+        print(" Skipped question due to API error.")
 
 if not data_samples["question"]:
-    print("❌ No data collected. Exiting.")
+    print(" No data collected. Exiting.")
     exit()
 
-print(f"\n✓ Collected {len(data_samples['question'])} samples")
+print(f"\n Collected {len(data_samples['question'])} samples")
 
 
-print("\n🔍 Data structure check:")
+print("\n Data structure check:")
 for i, q in enumerate(data_samples["question"]):
     print(f"\nSample {i + 1}:")
     print(f"  Question: {q[:80]}...")
@@ -122,7 +122,7 @@ for i, q in enumerate(data_samples["question"]):
 
 rag_dataset = Dataset.from_dict(data_samples)
 
-print("\n⚖️  Running Ragas Evaluation...")
+print("\n️  Running Ragas Evaluation...")
 print("This may take a few minutes...\n")
 
 metrics = [
@@ -142,7 +142,7 @@ try:
         raise_exceptions=True
     )
 except Exception as e:
-    print(f"\n❌ Evaluation failed with error: {e}")
+    print(f"\n Evaluation failed with error: {e}")
     print("\nTrying to get more details...")
     import traceback
 
@@ -175,11 +175,11 @@ existing_columns = [col for col in wanted_columns if col in df.columns]
 output_df = df[existing_columns]
 
 pd.set_option('display.max_colwidth', 100)
-print("\n📊 === Detailed Report ===")
+print("\n === Detailed Report ===")
 print(output_df)
 
 
-print("\n🔍 Checking for NaN values:")
+print("\n Checking for NaN values:")
 for col in output_df.columns:
     nan_count = output_df[col].isna().sum()
     if nan_count > 0:
@@ -189,14 +189,14 @@ for col in output_df.columns:
 
 
 output_df.to_csv("rag_evaluation_results.csv", index=False)
-print("\n✅ Saved to 'rag_evaluation_results.csv'")
+print("\n Saved to 'rag_evaluation_results.csv'")
 
-print("\n📈 Global Average Scores:")
+print("\n Global Average Scores:")
 for metric in metrics:
     metric_name = metric.name
     if metric_name in df.columns:
         avg_score = df[metric_name].mean()
         if pd.isna(avg_score):
-            print(f"  ⚠️  {metric_name}: NaN (evaluation failed)")
+            print(f"  ️  {metric_name}: NaN (evaluation failed)")
         else:
-            print(f"  ✓ {metric_name}: {avg_score:.4f}")
+            print(f"   {metric_name}: {avg_score:.4f}")
