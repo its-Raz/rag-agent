@@ -1,0 +1,4 @@
+question,answer,ground_truth,context_recall,context_precision,faithfulness,answer_relevancy
+Find a TED talk that discusses how sports improve health. Provide the title and speaker.,"How playing sports benefits your body... and your brain — Jaspal Singh
+
+Explanation (from the provided TED transcript): The talk states ""it's well accepted that exercise is good for our bodies and minds"" and details physical benefits (stronger bones, lower risk of stroke/diabetes), biochemical effects (""Our brains also release a number of chemicals when we workout, including endorphins""), and additional gains from team sports (community, reduced risk of depression, increased self‑esteem and confidence).",The relevant talk is 'How playing sports benefits your body... and your brain' by speaker Jaspal Singh.,,,,
